@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Multi-Tool Creative Agent</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #chat-container { max-width: 600px; margin: auto; }
+        #chat-output { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; }
+        #user-input { width: 100%; padding: 5px; margin-top: 10px; }
+        button { padding: 5px 10px; }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <h2>Multi-Tool Creative Agent</h2>
+        <div id="chat-output"></div>
+        <input type="text" id="user-input" placeholder="Type your message...">
+        <button onclick="sendMessage()">Send</button>
+        <button onclick="clearHistory()">Clear History</button>
+    </div>
+    <script>
+        async function sendMessage() {
+            const input = document.getElementById('user-input').value;
+            if (!input) return;
+            addMessage('You: ' + input);
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ input })
+            });
+            const data = await response.json();
+            addMessage('Assistant: ' + data.response);
+            document.getElementById('user-input').value = '';
+        }
+
+        async function clearHistory() {
+            await fetch('/clear', { method: 'POST' });
+            document.getElementById('chat-output').innerHTML = '';
+            addMessage('Conversation history cleared.');
+        }
+
+        function addMessage(text) {
+            const output = document.getElementById('chat-output');
+            output.innerHTML += `<p>${text}</p>`;
+            output.scrollTop = output.scrollHeight;
+        }
+    </script>
+</body>
+</html>

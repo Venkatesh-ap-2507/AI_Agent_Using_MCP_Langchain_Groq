@@ -1,0 +1,25 @@
+{
+    "mcpServers": {
+        "storywriter": {
+            "command": "python",
+            "args": [
+                "storywriter_mcp.py"
+            ],
+            "transport": "stdio"
+        },
+        "imagegenerator": {
+            "command": "python",
+            "args": [
+                "imagegenerator_mcp.py"
+            ],
+            "transport": "stdio"
+        },
+        "duckduckgo-search": {
+            "command": "python",
+            "args": [
+                "duckduckgo_mcp.py"
+            ],
+            "transport": "stdio"
+        }
+    }
+}

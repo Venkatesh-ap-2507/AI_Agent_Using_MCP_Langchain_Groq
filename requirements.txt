@@ -1,0 +1,11 @@
+fastmcp
+langchain-mcp-adapters
+langchain-groq
+langchain-core
+langgraph
+flask
+python-dotenv
+duckduckgo-search
+requests
+pillow
+asyncio

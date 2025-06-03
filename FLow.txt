@@ -1,0 +1,60 @@
+Idea 2: Multi-Tool Creative Agent
+Description: Build an AI agent that writes stories, generates images, and searches the web for inspiration, combining multiple MCP servers.
+
+Components:
+MCP Servers:
+Story Writer: Generates stories based on a topic.
+Image Generator: Creates images for the story (e.g., using a Stable Diffusion API).
+Web Search: Gathers inspiration or context.
+Groq LLM: Use Mixtral-8x7b-32768 for creative tasks.
+LangChain: Use MultiServerMCPClient to connect to multiple MCP servers.
+Implementation Steps:
+Set Up MCP Servers:
+Story Writer Server:
+python
+
+Collapse
+
+Wrap
+
+Copy
+from mcp.server.fastmcp import FastMCP
+from langchain_openai import ChatOpenAI
+mcp = FastMCP("storywriter")
+@mcp.tool()
+async def write_story(topic: str) -> str:
+    model = ChatOpenAI(model="gpt-4o-mini")
+    response = model.invoke(f"Write a short story about {topic}")
+    return response.content
+mcp.run(transport="stdio")
+Similar servers for image generation and web search (adapt from).
+LangChain Agent:
+python
+
+Collapse
+
+Wrap
+
+Copy
+from langchain_mcp_adapters.client import MultiServerMCPClient
+from langgraph.prebuilt import create_react_agent
+from langchain_groq import ChatGroq
+import asyncio
+async def main():
+    async with MultiServerMCPClient({
+        "storywriter": {"command": "python", "args": ["storywriter.py"], "transport": "stdio"},
+        "imagegenerator": {"command": "python", "args": ["image.py"], "transport": "stdio"},
+        "websearch": {"command": "python", "args": ["search.py"], "transport": "stdio"}
+    }) as client:
+        model = ChatGroq(model="mixtral-8x7b-32768")
+        agent = create_react_agent(model, client.get_tools())
+        response = await agent.ainvoke({"messages": [HumanMessage(content="Write a story about a dragon and generate an image")]})
+        print(response['messages'][-1].content)
+asyncio.run(main())
+Use Case:
+Input: “Write a story about a dragon and generate an image.”
+The agent uses the storywriter tool to create a story, the image generator to produce a visual, and optionally searches the web for dragon mythology to enrich the context.
+Why This Works:
+MCP’s modularity allows multiple tools to work together.
+Groq’s speed ensures quick story and response generation.
+LangChain orchestrates the multi-tool workflow seamlessly.
