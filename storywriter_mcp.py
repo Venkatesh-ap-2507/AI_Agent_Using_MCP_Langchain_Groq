@@ -159,23 +159,3 @@ Write a seamless continuation that feels like a natural part of the original sto
 
 if __name__ == "__main__":
     mcp.run(transport="stdio")
-
-
-# from fastmcp import FastMCP
-# from langchain_groq import ChatGroq
-# from dotenv import load_dotenv
-
-# load_dotenv()
-
-# mcp = FastMCP("storywriter")
-
-
-# @mcp.tool()
-# async def write_story(topic: str) -> str:
-#     llm = ChatGroq(model="llama3-70b-8192", temperature=0.7)
-#     prompt = f"Write a short, creative story (200-300 words) about {topic}."
-#     response = await llm.ainvoke(prompt)
-#     return response.content
-
-# if __name__ == "__main__":
-#     mcp.run(transport="stdio")
